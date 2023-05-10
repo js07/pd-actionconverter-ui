@@ -6,8 +6,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/pd-actionconverter-ui/',
   define: {
-    'process.env': '({})',
+    'process.env': '({})'
   },
   plugins: [
     vue(),
@@ -19,5 +20,5 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },
+  }
 })
