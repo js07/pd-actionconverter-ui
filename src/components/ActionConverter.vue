@@ -38,8 +38,16 @@ watch(convertOptions, generateOutput, { deep: true })
 <template>
   <div class="action-converter">
     <div class="left-side">
-      <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutputDebounced" />
-      <CodeEditor v-model="codeConfig" placeholder="Code Config" @input="generateOutputDebounced" />
+      <div class="raw-code">
+        <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutputDebounced" />
+      </div>
+      <div class="code-config">
+        <CodeEditor
+          v-model="codeConfig"
+          placeholder="Code Config"
+          @input="generateOutputDebounced"
+        />
+      </div>
     </div>
     <div class="right-side">
       <div class="convert-options">
@@ -75,5 +83,19 @@ watch(convertOptions, generateOutput, { deep: true })
   flex: 1;
   padding: 5px;
   min-width: 100px;
+}
+
+.raw-code {
+  display: flex;
+  flex: 3;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+.code-config {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100px;
 }
 </style>
