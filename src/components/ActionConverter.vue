@@ -8,11 +8,15 @@ const codeConfig = ref('')
 const output = ref('')
 
 const generateOutput = debounce(async () => {
-  const { code } = await convert(
-    { code: rawCode.value, codeConfig: codeConfig.value },
-    { usePipedreamLintRules: false }
-  )
-  output.value = code
+  try {
+    const { code } = await convert(
+      { code: rawCode.value, codeConfig: codeConfig.value },
+      { usePipedreamLintRules: false }
+    )
+    output.value = code
+  } catch (err: any) {
+    output.value = err?.message || 'Error converting code'
+  }
 }, 1000)
 </script>
 
