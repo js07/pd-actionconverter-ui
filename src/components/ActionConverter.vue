@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce } from '@/utils'
-import { ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { convert } from 'pd-convert-actions'
 import CodeEditor from './CodeEditor.vue'
 
@@ -8,11 +8,16 @@ const rawCode = ref('')
 const codeConfig = ref('')
 const output = ref('')
 
-const generateOutput = debounce(async () => {
+const convertOptions = reactive({
+  usePipedreamLintRules: false,
+  toEsm: true
+})
+
+const generateOutput = async () => {
   try {
     const { code } = await convert(
       { code: rawCode.value, codeConfig: codeConfig.value },
-      { usePipedreamLintRules: false }
+      convertOptions
     )
     output.value = code
   } catch (err: any) {
@@ -23,16 +28,26 @@ const generateOutput = debounce(async () => {
     }
     output.value = err?.message || 'Error converting code'
   }
-}, 1000)
+}
+
+const generateOutputDebounced = debounce(generateOutput, 1000)
+
+watch(convertOptions, generateOutput, { deep: true })
 </script>
 
 <template>
   <div class="action-converter">
     <div class="left-side">
-      <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutput" />
-      <CodeEditor v-model="codeConfig" placeholder="Code Config" @input="generateOutput" />
+      <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutputDebounced" />
+      <CodeEditor v-model="codeConfig" placeholder="Code Config" @input="generateOutputDebounced" />
     </div>
     <div class="right-side">
+      <div class="convert-options">
+        <label>
+          <input type="checkbox" v-model="convertOptions.toEsm" />
+          Convert to ESM
+        </label>
+      </div>
       <CodeEditor v-model="output" placeholder="Output" readonly />
     </div>
   </div>
