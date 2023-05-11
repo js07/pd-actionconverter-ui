@@ -2,6 +2,7 @@
 import { debounce } from '@/utils'
 import { ref } from 'vue'
 import { convert } from 'pd-convert-actions'
+import CodeEditor from './CodeEditor.vue'
 
 const rawCode = ref('')
 const codeConfig = ref('')
@@ -15,6 +16,11 @@ const generateOutput = debounce(async () => {
     )
     output.value = code
   } catch (err: any) {
+    if (err?.loc?.line) {
+      // Subtract 1 from the line number sine the raw code is wrapped in a
+      // function expression
+      err.loc.line -= 1
+    }
     output.value = err?.message || 'Error converting code'
   }
 }, 1000)
@@ -23,11 +29,11 @@ const generateOutput = debounce(async () => {
 <template>
   <div class="action-converter">
     <div class="left-side">
-      <textarea v-model="rawCode" placeholder="Raw Code" @input="generateOutput"></textarea>
-      <textarea v-model="codeConfig" placeholder="Code Config" @input="generateOutput"></textarea>
+      <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutput" />
+      <CodeEditor v-model="codeConfig" placeholder="Code Config" @input="generateOutput" />
     </div>
     <div class="right-side">
-      <textarea v-model="output" placeholder="Output" readonly></textarea>
+      <CodeEditor v-model="output" placeholder="Output" readonly />
     </div>
   </div>
 </template>
@@ -36,6 +42,7 @@ const generateOutput = debounce(async () => {
 .action-converter {
   display: flex;
   height: 100%;
+  max-height: 100%;
   width: 100%;
 }
 
@@ -43,23 +50,15 @@ const generateOutput = debounce(async () => {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 10px;
+  padding: 5px;
+  min-width: 100px;
 }
 
 .right-side {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: 10px;
-}
-
-textarea {
-  flex: 1;
-  resize: none;
-  margin-bottom: 10px;
-}
-
-textarea:last-child {
-  margin-bottom: 0;
+  padding: 5px;
+  min-width: 100px;
 }
 </style>

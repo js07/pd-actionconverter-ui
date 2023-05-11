@@ -19,5 +19,6 @@ header {
 main {
   display: flex;
   flex: 1;
+  min-height: 100px;
 }
 </style>
