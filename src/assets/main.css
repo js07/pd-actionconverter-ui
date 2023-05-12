@@ -3,7 +3,7 @@
 #app {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 1rem;
+  padding-top: 0.5rem;
 
   font-weight: normal;
 
@@ -16,12 +16,12 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: #009ebd;
   transition: 0.4s;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: rgba(0, 158, 189, 0.2);
   }
 }
