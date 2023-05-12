@@ -5,7 +5,7 @@ import { convert } from 'pd-convert-actions'
 import CodeEditor from './CodeEditor.vue'
 
 const rawCode = ref('')
-const codeConfig = ref('')
+const codeConfigOrParamsSchema = ref('')
 const output = ref('')
 
 const convertOptions = reactive({
@@ -13,10 +13,24 @@ const convertOptions = reactive({
   toEsm: true
 })
 
+/**
+ * Accept both a params schema object and `{ params_schema }` as the code config
+ * input string. If the parsed config has a params_schema property, return it.
+ * Otherwise, return `{ params_schema: parsedConfig }`.
+ */
+const makeCodeConfig = () => {
+  try {
+    const parsedConfig = JSON.parse(codeConfigOrParamsSchema.value)
+    return parsedConfig?.params_schema ? parsedConfig : { params_schema: parsedConfig }
+  } catch (err) {
+    return {}
+  }
+}
+
 const generateOutput = async () => {
   try {
     const { code } = await convert(
-      { code: rawCode.value, codeConfig: codeConfig.value },
+      { code: rawCode.value, codeConfig: JSON.stringify(makeCodeConfig()) },
       convertOptions
     )
     output.value = code
@@ -43,8 +57,8 @@ watch(convertOptions, generateOutput, { deep: true })
       </div>
       <div class="code-config">
         <CodeEditor
-          v-model="codeConfig"
-          placeholder="Code Config"
+          v-model="codeConfigOrParamsSchema"
+          placeholder="Code Config or Params Schema"
           @input="generateOutputDebounced"
         />
       </div>
