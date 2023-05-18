@@ -10,7 +10,7 @@ const output = ref('')
 
 const convertOptions = reactive({
   usePipedreamLintRules: false,
-  toEsm: true
+  toEsm: false
 })
 
 /**
