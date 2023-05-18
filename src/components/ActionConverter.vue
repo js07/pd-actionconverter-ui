@@ -3,9 +3,10 @@ import { debounce } from '@/utils'
 import { reactive, ref, watch } from 'vue'
 import { convert } from '@js07/pd-convert-actions'
 import CodeEditor from './CodeEditor.vue'
+import getGithubRepoExample from '@/examples/getGithubRepo'
 
-const rawCode = ref('')
-const codeConfigOrParamsSchema = ref('')
+const rawCode = ref(getGithubRepoExample.code)
+const codeConfigOrParamsSchema = ref(getGithubRepoExample.paramsSchema)
 const output = ref('')
 
 const convertOptions = reactive({
@@ -46,21 +47,18 @@ const generateOutput = async () => {
 
 const generateOutputDebounced = debounce(generateOutput, 1000)
 
-watch(convertOptions, generateOutput, { deep: true })
+watch([rawCode, codeConfigOrParamsSchema], generateOutputDebounced)
+watch(convertOptions, generateOutput, { deep: true, immediate: true })
 </script>
 
 <template>
   <div class="action-converter">
     <div class="left-side">
       <div class="raw-code">
-        <CodeEditor v-model="rawCode" placeholder="Raw Code" @input="generateOutputDebounced" />
+        <CodeEditor v-model="rawCode" placeholder="Raw Code" />
       </div>
       <div class="code-config">
-        <CodeEditor
-          v-model="codeConfigOrParamsSchema"
-          placeholder="Code Config or Params Schema"
-          @input="generateOutputDebounced"
-        />
+        <CodeEditor v-model="codeConfigOrParamsSchema" placeholder="Code Config or Params Schema" />
       </div>
     </div>
     <div class="right-side">
