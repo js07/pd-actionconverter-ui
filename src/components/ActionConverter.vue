@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { debounce } from '@/utils'
 import { reactive, ref, watch } from 'vue'
-import { convert } from 'pd-convert-actions'
+import { convert } from '@js07/pd-convert-actions'
 import CodeEditor from './CodeEditor.vue'
 
 const rawCode = ref('')
